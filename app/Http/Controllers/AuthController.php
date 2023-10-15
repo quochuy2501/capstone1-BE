@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Auth\RegisterUserRequest;
 use App\Http\Requests\Auth\UpdateInforUserRequest;
+use App\Models\Category;
 use App\Models\District;
 use App\Models\User;
 use App\Models\Ward;
@@ -76,11 +77,19 @@ class AuthController extends Controller
         ],200);
     }
 
-    public function getWards()
+    public function getWards($id)
     {
-        $data = Ward::all();
+        $data = Ward::where("id_district", $id)->get();
         return response()->json([
             'wards' => $data,
+        ],200);
+    }
+
+    public function getCategory()
+    {
+        $data = Category::all();
+        return response()->json([
+            'categories' => $data,
         ],200);
     }
 }
