@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
         $this->call(AdminSeeder::class);
         $this->call(DistrictSeeder::class);
         $this->call(WardSeeder::class);
+        $this->call(CategorySeeder::class);
         Schema::enableForeignKeyConstraints();
     }
 }
