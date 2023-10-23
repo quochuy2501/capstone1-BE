@@ -10,6 +10,7 @@ class UserController extends Controller
 {
     public function getData(Request $request)
     {
+
         $user = User::where("id_role", 0)->orderBy('id', 'DESC');
         if($request->is_block != ""){
             $user = $user->where('is_block', $request->is_block);

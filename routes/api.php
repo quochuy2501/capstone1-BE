@@ -43,7 +43,6 @@ Route::group(['middleware' => 'jwt'], function ($router) {
 
     Route::group(['prefix' => '/owner'], function () {
         Route::post('/update-my-information', [\App\Http\Controllers\AuthController::class, 'updateInfor']);
-
         Route::group(['prefix' => '/football-pitch'], function () {
             Route::post('/create', [\App\Http\Controllers\Owner\FootballPitchController::class, 'store']);
             Route::get('/get-data', [\App\Http\Controllers\Owner\FootballPitchController::class, 'getData']);
