@@ -11,7 +11,7 @@ class OwnerController extends Controller
 {
     public function getData(Request $request)
     {
-        $owner = User::where("id_role", 1);
+        $owner = User::where("id_role", 1)->orderBy('id', 'DESC');
         if($request->is_block != ""){
             $owner = $owner->where('is_block', $request->is_block);
         }

@@ -15,6 +15,7 @@ class FootballPitchController extends Controller
         $football_pitchs = FootballPitch::join('categories', 'football_pitches.id_category', 'categories.id')
             ->where('id_owner', $owner->id)
             ->select('football_pitches.*', 'categories.name_category')
+            ->orderBy('id', 'DESC')
             ->paginate(5);
         if (count($football_pitchs) > 0) {
             return response()->json([
