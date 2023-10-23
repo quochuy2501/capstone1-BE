@@ -9,12 +9,19 @@ use Illuminate\Http\Request;
 
 class OwnerController extends Controller
 {
-    public function getData()
+    public function getData(Request $request)
     {
-        $user = User::where("id_role", 0)->get();
-        if (count($user) > 0) {
+        $owner = User::where("id_role", 1)->orderBy('id', 'DESC');
+        if($request->is_block != ""){
+            $owner = $owner->where('is_block', $request->is_block);
+        }
+        if($request->email != ""){
+            $owner = $owner->where('email', 'like' , '%' . $request->email . '%');
+        }
+        $owner = $owner->paginate(5);
+        if (count($owner) > 0) {
             return response()->json([
-                'users'  => $user,
+                'owners'  => $owner,
             ], 200);
         }
         return response()->json([
@@ -32,10 +39,10 @@ class OwnerController extends Controller
 
     public function updateStatus($id)
     {
-        $user = User::where("id_role", 0)->where("id", $id)->first();
-        if ($user) {
-            $user->is_block = !$user->is_block;
-            $user->save();
+        $owner = User::where("id_role", 1)->where("id", $id)->first();
+        if ($owner) {
+            $owner->is_block = !$owner->is_block;
+            $owner->save();
 
             return response()->json([
                 'message'  => "Update status successfully",
@@ -48,11 +55,11 @@ class OwnerController extends Controller
 
     public function destroy($id)
     {
-        $user = User::where("id_role", 0)->where("id", $id)->first();
-        if ($user) {
-            $user->delete();
+        $owner = User::where("id_role", 1)->where("id", $id)->first();
+        if ($owner) {
+            $owner->delete();
             return response()->json([
-                'message'  => "Delete user successfully",
+                'message'  => "Delete owner successfully",
             ], 200);
         }
         return response()->json([
