@@ -9,6 +9,7 @@ use App\Models\District;
 use App\Models\User;
 use App\Models\Ward;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
@@ -25,6 +26,9 @@ class AuthController extends Controller
     {
         $credentials = $request->only('email', 'password');
         if ($token = JWTAuth::attempt($credentials)) {
+            if(Auth::user()->is_block == 1){
+                return response()->json(['error' => 'Your account has been locked'], 400);
+            }
             return response()->json([
                 'token' => $token,
                 "id_role" => auth()->user()->id_role
