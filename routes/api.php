@@ -43,6 +43,7 @@ Route::group(['middleware' => 'jwt'], function ($router) {
 
     Route::group(['prefix' => '/owner'], function () {
         Route::post('/update-my-information', [\App\Http\Controllers\AuthController::class, 'updateInfor']);
+
         Route::group(['prefix' => '/football-pitch'], function () {
             Route::post('/create', [\App\Http\Controllers\Owner\FootballPitchController::class, 'store']);
             Route::get('/get-data', [\App\Http\Controllers\Owner\FootballPitchController::class, 'getData']);
@@ -55,4 +56,6 @@ Route::group(['middleware' => 'jwt'], function ($router) {
 });
 Route::group(['prefix' => '/'], function () {
     Route::post('/get-football-pitch', [\App\Http\Controllers\User\HomeController::class, 'getDataFootball']);
+    Route::get('/get-football-pitch/{id}', [\App\Http\Controllers\User\HomeController::class, 'getDataFootballById']);
+    Route::get('/get-football-pitch-around/{id}', [\App\Http\Controllers\User\HomeController::class, 'getDataFootballAroundById']);
 });
