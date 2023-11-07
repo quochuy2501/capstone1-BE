@@ -58,4 +58,6 @@ Route::group(['prefix' => '/'], function () {
     Route::post('/get-football-pitch', [\App\Http\Controllers\User\HomeController::class, 'getDataFootball']);
     Route::get('/get-football-pitch/{id}', [\App\Http\Controllers\User\HomeController::class, 'getDataFootballById']);
     Route::get('/get-football-pitch-around/{id}', [\App\Http\Controllers\User\HomeController::class, 'getDataFootballAroundById']);
+
+    Route::post('/get-schedule-pitch', [\App\Http\Controllers\User\HomeController::class, 'getSchedulePitchById']);
 });
