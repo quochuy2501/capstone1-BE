@@ -59,5 +59,11 @@ Route::group(['prefix' => '/'], function () {
     Route::get('/get-football-pitch/{id}', [\App\Http\Controllers\User\HomeController::class, 'getDataFootballById']);
     Route::get('/get-football-pitch-around/{id}', [\App\Http\Controllers\User\HomeController::class, 'getDataFootballAroundById']);
 
-    Route::post('/get-schedule-pitch', [\App\Http\Controllers\User\HomeController::class, 'getSchedulePitchById']);
+    Route::post('/get-schedule-pitch', [\App\Http\Controllers\User\HomeController::class, 'getSchedulePitch']);
+    Route::post('/set-schedule-pitch', [\App\Http\Controllers\User\HomeController::class, 'setSchedulePitch']);
+
+    Route::post('/process-paypal', [\App\Http\Controllers\User\PayPalController::class, 'processPaypal'])->name('processPaypal');
+    Route::get('/process-success', [\App\Http\Controllers\User\PayPalController::class, 'success'])->name('success');
+    Route::get('/process-cancel', [\App\Http\Controllers\User\PayPalController::class, 'cancel'])->name('cancel');
+
 });
