@@ -1,1 +1,0 @@
-{"__version__":1,"totalSize":5448,"count":10,"data":{"Authenticate.php":[0,490],"EncryptCookies.php":[0,324],"PreventRequestsDuringMaintenance.php":[0,383],"RedirectIfAuthenticated.php":[0,909],"TrimStrings.php":[0,400],"TrustHosts.php":[0,392],"TrustProxies.php":[0,677],"ValidateSignature.php":[0,482],"VerifyCsrfToken.php":[0,337],"VerifyJWTToken.php":[0,1054]}}
