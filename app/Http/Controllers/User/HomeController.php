@@ -198,4 +198,17 @@ class HomeController extends Controller
         }
         return response()->json(['error' => 'There are no football pitches in the system'], 400);
     }
+
+    public function getScheduleOrdered() {
+        $user = auth()->user();
+        $schedules = Schedule::where("user_id", $user->id)
+                                ->where("payment_id", 0)
+                                ->join("football_pitches", "football_pitches.id", "schedules.pitch_id")
+                                ->select("schedules.*", "football_pitches.name as name_pitch")
+                                ->first();
+        if($schedules){
+            return response()->json(['schedule' => $schedules], 200);
+        }
+        return response()->json(['error' => 'There are no schedule football pitches in the system'], 400);
+    }
 }
