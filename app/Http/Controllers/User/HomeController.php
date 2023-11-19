@@ -228,3 +228,4 @@ class HomeController extends Controller
         return response()->json(['error' => 'There are no schedule football pitches in the system'], 400);
     }
 }
+
