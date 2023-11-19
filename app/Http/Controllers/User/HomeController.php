@@ -118,6 +118,7 @@ class HomeController extends Controller
             $time_end = "";
             $time_start = "";
             $list_scheduled = [];
+            $status = false;
             $json = json_decode($football_pitch->detailed_schedule, true);
             foreach ($json as $value) {
                 if (substr($request->date, 0, 3) == $value["id"] && $value["value"] == "open") {
@@ -126,6 +127,7 @@ class HomeController extends Controller
                 };
             }
             if ($time_start != null) {
+                $status = true;
                 $dateTime = new DateTime($request->date);
                 $schedules = Schedule::where("pitch_id", $football_pitch->id)->whereDate("date", $dateTime)
                     ->orderBy("time_start")->get();
@@ -140,6 +142,7 @@ class HomeController extends Controller
                 'time_start'  => $time_start,
                 'time_end'  => $time_end,
                 'list_scheduled' => $list_scheduled,
+                'status'=> $status,
             ], 200);
         }
         return response()->json(['error' => 'There are no football pitches in the system'], 400);
@@ -197,6 +200,19 @@ class HomeController extends Controller
             return response()->json(['error' => 'Invalid time'], 400);
         }
         return response()->json(['error' => 'There are no football pitches in the system'], 400);
+    }
+
+    public function getScheduleOrdered() {
+        $user = auth()->user();
+        $schedules = Schedule::where("user_id", $user->id)
+                                ->where("payment_id", 0)
+                                ->join("football_pitches", "football_pitches.id", "schedules.pitch_id")
+                                ->select("schedules.*", "football_pitches.name as name_pitch")
+                                ->first();
+        if($schedules){
+            return response()->json(['schedule' => $schedules], 200);
+        }
+        return response()->json(['error' => 'There are no schedule football pitches in the system'], 400);
     }
     public function getHistory() {
         $user = auth()->user();
