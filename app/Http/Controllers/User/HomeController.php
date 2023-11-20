@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Models\FootballPitch;
 use App\Models\Schedule;
+use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
 use stdClass;
@@ -224,6 +225,39 @@ class HomeController extends Controller
                                 ->paginate(5);
         if(count($schedules) > 0){
             return response()->json(['schedule' => $schedules], 200);
+        }
+        return response()->json(['error' => 'There are no schedule football pitches in the system'], 400);
+    }
+
+
+    public function getScheduleInMonth(Request $request) {
+        $user = auth()->user();
+        $date = Carbon::createFromFormat('m/d/Y', $request->month)->format('Y-m-d');
+
+        $end     = Carbon::create(date("Y-m-t", strtotime($date)));
+        $begin   = Carbon::create(date("Y-m-01", strtotime($date)));
+        $schedules = Schedule::where("schedules.user_id", $user->id)
+                                ->whereDate('schedules.date', '>=', $begin)
+                                ->whereDate('schedules.date', '<=', $end)
+                                ->join("football_pitches", "football_pitches.id", "schedules.pitch_id")
+                                ->leftjoin("invoices", "schedules.payment_id", "invoices.id")
+                                ->select("schedules.*", "football_pitches.name as name_pitch")
+                                ->orderBy("schedules.date")
+                                ->get();
+        if(count($schedules) > 0){
+            return response()->json(['schedule' => $schedules], 200);
+        }
+        return response()->json(['error' => 'There are no schedule football pitches in the system'], 400);
+    }
+    public function deleteSchedule($id) {
+        $user = auth()->user();
+        $schedule = Schedule::where("user_id", $user->id)
+                                ->where("id", $id)
+                                ->where("payment_id", 0)
+                                ->first();
+        if($schedule){
+            $schedule->delete();
+            return response()->json(['message' => "Deleted schedule successfully"], 200);
         }
         return response()->json(['error' => 'There are no schedule football pitches in the system'], 400);
     }
