@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Owner;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateFootballPitchRequest;
 use App\Models\FootballPitch;
+use App\Models\Schedule;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class FootballPitchController extends Controller
@@ -112,5 +114,41 @@ class FootballPitchController extends Controller
         return response()->json([
             'error' => "The football field is not correct",
         ], 400);
+    }
+    public function getScheduleInMonth(Request $request) {
+        $user = auth()->user();
+        $date = Carbon::createFromFormat('m/d/Y', $request->month)->format('Y-m-d');
+
+        $end     = Carbon::create(date("Y-m-t", strtotime($date)));
+        $begin   = Carbon::create(date("Y-m-01", strtotime($date)));
+        $schedules = Schedule::where("football_pitches.id_owner", $user->id)
+                                ->whereDate('schedules.date', '>=', $begin)
+                                ->whereDate('schedules.date', '<=', $end)
+                                ->join("football_pitches", "football_pitches.id", "schedules.pitch_id")
+                                ->leftjoin("invoices", "schedules.payment_id", "invoices.id")
+                                ->select("schedules.*", "football_pitches.name as name_pitch")
+                                ->orderBy("schedules.date")
+                                ->get();
+        if(count($schedules) > 0){
+            return response()->json(['schedule' => $schedules], 200);
+        }
+        return response()->json(['error' => 'There are no schedule football pitches in the system'], 400);
+    }
+
+    public function getScheduleInDate(Request $request) {
+        $user = auth()->user();
+        $date = Carbon::createFromFormat('m/d/Y', $request->date)->format('Y-m-d');
+
+        $schedules = Schedule::where("football_pitches.id_owner", $user->id)
+                                ->whereDate('schedules.date', '=', $date)
+                                ->join("football_pitches", "football_pitches.id", "schedules.pitch_id")
+                                ->leftjoin("invoices", "schedules.payment_id", "invoices.id")
+                                ->select("schedules.*", "football_pitches.name as name_pitch")
+                                ->orderBy("schedules.date")
+                                ->get();
+        if(count($schedules) > 0){
+            return response()->json(['schedule' => $schedules], 200);
+        }
+        return response()->json(['error' => 'There are no schedule football pitches in the system'], 400);
     }
 }

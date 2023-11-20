@@ -44,6 +44,9 @@ Route::group(['middleware' => 'jwt'], function ($router) {
     Route::group(['prefix' => '/owner'], function () {
         Route::post('/update-my-information', [\App\Http\Controllers\AuthController::class, 'updateInfor']);
 
+        Route::post('/get-schedule-in-month', [\App\Http\Controllers\Owner\FootballPitchController::class, 'getScheduleInMonth']);
+        Route::post('/get-schedule-in-date', [\App\Http\Controllers\Owner\FootballPitchController::class, 'getScheduleInDate']);
+
         Route::group(['prefix' => '/football-pitch'], function () {
             Route::post('/create', [\App\Http\Controllers\Owner\FootballPitchController::class, 'store']);
             Route::get('/get-data', [\App\Http\Controllers\Owner\FootballPitchController::class, 'getData']);
@@ -66,7 +69,6 @@ Route::group(['prefix' => '/'], function () {
     Route::get('/history', [\App\Http\Controllers\User\HomeController::class, 'getHistory']);
     Route::post('/get-schedule-in-month', [\App\Http\Controllers\User\HomeController::class, 'getScheduleInMonth']);
     Route::get('/delete-schedule/{id}', [\App\Http\Controllers\User\HomeController::class, 'deleteSchedule']);
-
 
     Route::post('/process-paypal', [\App\Http\Controllers\User\PayPalController::class, 'processPaypal'])->name('processPaypal');
     Route::get('/process-success', [\App\Http\Controllers\User\PayPalController::class, 'success'])->name('success');
