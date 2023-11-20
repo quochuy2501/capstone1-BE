@@ -229,7 +229,6 @@ class HomeController extends Controller
         return response()->json(['error' => 'There are no schedule football pitches in the system'], 400);
     }
 
-
     public function getScheduleInMonth(Request $request) {
         $user = auth()->user();
         $date = Carbon::createFromFormat('m/d/Y', $request->month)->format('Y-m-d');
@@ -262,4 +261,3 @@ class HomeController extends Controller
         return response()->json(['error' => 'There are no schedule football pitches in the system'], 400);
     }
 }
-

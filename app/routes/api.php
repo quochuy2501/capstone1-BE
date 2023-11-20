@@ -67,7 +67,6 @@ Route::group(['prefix' => '/'], function () {
     Route::post('/get-schedule-in-month', [\App\Http\Controllers\User\HomeController::class, 'getScheduleInMonth']);
     Route::get('/delete-schedule/{id}', [\App\Http\Controllers\User\HomeController::class, 'deleteSchedule']);
 
-
     Route::post('/process-paypal', [\App\Http\Controllers\User\PayPalController::class, 'processPaypal'])->name('processPaypal');
     Route::get('/process-success', [\App\Http\Controllers\User\PayPalController::class, 'success'])->name('success');
     Route::get('/process-cancel', [\App\Http\Controllers\User\PayPalController::class, 'cancel'])->name('cancel');
