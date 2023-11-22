@@ -8,6 +8,7 @@ use App\Models\FootballPitch;
 use App\Models\Schedule;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class FootballPitchController extends Controller
 {
@@ -150,5 +151,37 @@ class FootballPitchController extends Controller
             return response()->json(['schedule' => $schedules], 200);
         }
         return response()->json(['error' => 'There are no schedule football pitches in the system'], 400);
+    }
+
+    public function getTotalMoney() {
+        $user = auth()->user();
+        $end     = Carbon::now();
+        $begin   = Carbon::create(date("Y-1-1", strtotime($end)));
+        $data = Schedule::where("football_pitches.id_owner", $user->id)
+                                ->whereDate('invoices.updated_at', '>=', $begin)
+                                ->whereDate('invoices.updated_at', '<=', $end)
+                                ->join("football_pitches", "football_pitches.id", "schedules.pitch_id")
+                                ->join("invoices", "schedules.payment_id", "invoices.id")
+                                ->select(DB::raw("DATE_FORMAT(invoices.updated_at, '%m-%Y') as month"),  DB::raw('sum(invoices.total_money) as total_money'))
+                                ->groupBy('month')
+                                ->get();
+
+        $arr_month = [];
+        $data_new = [];
+        foreach ($data as $value) {
+            array_push($arr_month, substr($value->month, 0, 2));
+            array_push($data_new, ['month' => $value->month, 'total_money' => $value->total_money]);
+        }
+        for ($i = $begin->month; $i < ($end->month + 1); $i++) {
+            if (!in_array($i, $arr_month)) {
+                if ($i < 10) {
+                    array_push($data_new, ['month' => '0' . ($i) . '-' . $end->year, 'total_money' => 0]);
+                } else {
+                    array_push($data_new, ['month' => ($i) . '-' . $end->year, 'total_money' => 0]);
+                }
+            }
+        }
+        asort($data_new);
+        return response()->json(['data' => $data_new], 200);
     }
 }

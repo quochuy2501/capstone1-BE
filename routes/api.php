@@ -47,6 +47,8 @@ Route::group(['middleware' => 'jwt'], function ($router) {
         Route::post('/get-schedule-in-month', [\App\Http\Controllers\Owner\FootballPitchController::class, 'getScheduleInMonth']);
         Route::post('/get-schedule-in-date', [\App\Http\Controllers\Owner\FootballPitchController::class, 'getScheduleInDate']);
 
+        Route::get('/get-total-money', [\App\Http\Controllers\Owner\FootballPitchController::class, 'getTotalMoney']);
+
         Route::group(['prefix' => '/football-pitch'], function () {
             Route::post('/create', [\App\Http\Controllers\Owner\FootballPitchController::class, 'store']);
             Route::get('/get-data', [\App\Http\Controllers\Owner\FootballPitchController::class, 'getData']);
@@ -69,6 +71,7 @@ Route::group(['prefix' => '/'], function () {
     Route::get('/history', [\App\Http\Controllers\User\HomeController::class, 'getHistory']);
     Route::post('/get-schedule-in-month', [\App\Http\Controllers\User\HomeController::class, 'getScheduleInMonth']);
     Route::get('/delete-schedule/{id}', [\App\Http\Controllers\User\HomeController::class, 'deleteSchedule']);
+    Route::post('/get-schedule-in-date', [\App\Http\Controllers\User\HomeController::class, 'getScheduleInDate']);
 
     Route::post('/get-schedule-in-date', [\App\Http\Controllers\User\HomeController::class, 'getScheduleInDate']);
 
