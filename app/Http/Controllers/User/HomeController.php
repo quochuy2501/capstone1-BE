@@ -219,8 +219,11 @@ class HomeController extends Controller
         $user = auth()->user();
         $schedules = Schedule::where("schedules.user_id", $user->id)
                                 ->join("football_pitches", "football_pitches.id", "schedules.pitch_id")
+                                ->join("users", "users.id", "football_pitches.id_owner")
+                                ->join("wards", "users.id_ward", "wards.id")
+                                ->join("districts", "users.id_district", "districts.id")
                                 ->leftjoin("invoices", "schedules.payment_id", "invoices.id")
-                                ->select("schedules.*", "football_pitches.name as name_pitch")
+                                ->select("schedules.*", "football_pitches.name as name_pitch", "users.phone", "districts.name_district", "wards.name_ward")
                                 ->orderBy("schedules.id","desc")
                                 ->paginate(5);
         if(count($schedules) > 0){
@@ -260,4 +263,23 @@ class HomeController extends Controller
         }
         return response()->json(['error' => 'There are no schedule football pitches in the system'], 400);
     }
+
+
+    public function getScheduleInDate(Request $request) {
+        $user = auth()->user();
+        $date = Carbon::createFromFormat('m/d/Y', $request->date)->format('Y-m-d');
+
+        $schedules = Schedule::where("schedules.user_id", $user->id)
+                                ->whereDate('schedules.date', '=', $date)
+                                ->join("football_pitches", "football_pitches.id", "schedules.pitch_id")
+                                ->leftjoin("invoices", "schedules.payment_id", "invoices.id")
+                                ->select("schedules.*", "football_pitches.name as name_pitch")
+                                ->orderBy("schedules.date")
+                                ->get();
+        if(count($schedules) > 0){
+            return response()->json(['schedule' => $schedules], 200);
+        }
+        return response()->json(['error' => 'There are no schedule football pitches in the system'], 400);
+    }
+
 }
