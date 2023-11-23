@@ -11,12 +11,16 @@ class OwnerController extends Controller
 {
     public function getData(Request $request)
     {
-        $owner = User::where("id_role", 1)->orderBy('id', 'DESC');
+        $owner = User::where("users.id_role", 1)
+                        ->join("wards", "users.id_ward", "wards.id")
+                        ->join("districts", "users.id_district", "districts.id")
+                        ->select("users.*", "districts.name_district", "wards.name_ward")
+                        ->orderBy('users.id', 'DESC');
         if($request->is_block != ""){
-            $owner = $owner->where('is_block', $request->is_block);
+            $owner = $owner->where('users.is_block', $request->is_block);
         }
         if($request->email != ""){
-            $owner = $owner->where('email', 'like' , '%' . $request->email . '%');
+            $owner = $owner->where('users.email', 'like' , '%' . $request->email . '%');
         }
         $owner = $owner->paginate(5);
         if (count($owner) > 0) {
