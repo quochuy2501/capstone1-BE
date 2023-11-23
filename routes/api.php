@@ -47,6 +47,8 @@ Route::group(['middleware' => 'jwt'], function ($router) {
         Route::post('/get-schedule-in-month', [\App\Http\Controllers\Owner\FootballPitchController::class, 'getScheduleInMonth']);
         Route::post('/get-schedule-in-date', [\App\Http\Controllers\Owner\FootballPitchController::class, 'getScheduleInDate']);
 
+        Route::get('/get-total-money', [\App\Http\Controllers\Owner\FootballPitchController::class, 'getTotalMoney']);
+
         Route::group(['prefix' => '/football-pitch'], function () {
             Route::post('/create', [\App\Http\Controllers\Owner\FootballPitchController::class, 'store']);
             Route::get('/get-data', [\App\Http\Controllers\Owner\FootballPitchController::class, 'getData']);

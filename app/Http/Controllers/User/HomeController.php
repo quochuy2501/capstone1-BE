@@ -218,14 +218,14 @@ class HomeController extends Controller
     public function getHistory() {
         $user = auth()->user();
         $schedules = Schedule::where("schedules.user_id", $user->id)
-                                ->join("football_pitches", "football_pitches.id", "schedules.pitch_id")
-                                ->join("users", "users.id", "football_pitches.id_owner")
-                                ->join("wards", "users.id_ward", "wards.id")
-                                ->join("districts", "users.id_district", "districts.id")
-                                ->leftjoin("invoices", "schedules.payment_id", "invoices.id")
-                                ->select("schedules.*", "football_pitches.name as name_pitch", "users.phone", "districts.name_district", "wards.name_ward")
-                                ->orderBy("schedules.id","desc")
-                                ->paginate(5);
+                    ->join("football_pitches", "football_pitches.id", "schedules.pitch_id")
+                    ->join("users", "users.id", "football_pitches.id_owner")
+                    ->join("wards", "users.id_ward", "wards.id")
+                    ->join("districts", "users.id_district", "districts.id")
+                    ->leftjoin("invoices", "schedules.payment_id", "invoices.id")
+                    ->select("schedules.*", "football_pitches.name as name_pitch", "users.phone", "users.address", "districts.name_district", "wards.name_ward")
+                    ->orderBy("schedules.id","desc")
+                    ->paginate(5);
         if(count($schedules) > 0){
             return response()->json(['schedule' => $schedules], 200);
         }
@@ -271,8 +271,11 @@ class HomeController extends Controller
         $schedules = Schedule::where("schedules.user_id", $user->id)
                                 ->whereDate('schedules.date', '=', $date)
                                 ->join("football_pitches", "football_pitches.id", "schedules.pitch_id")
+                                ->join("users", "users.id", "football_pitches.id_owner")
+                                ->join("wards", "users.id_ward", "wards.id")
+                                ->join("districts", "users.id_district", "districts.id")
                                 ->leftjoin("invoices", "schedules.payment_id", "invoices.id")
-                                ->select("schedules.*", "football_pitches.name as name_pitch")
+                                ->select("schedules.*", "football_pitches.name as name_pitch", "users.phone", "users.address", "districts.name_district", "wards.name_ward")
                                 ->orderBy("schedules.date")
                                 ->get();
         if(count($schedules) > 0){
