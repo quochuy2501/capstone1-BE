@@ -29,7 +29,7 @@ class PaypalController extends Controller
                 0 => [
                     "amount" => [
                         "currency_code" => "USD",
-                        "value" => $request->price
+                        "value" => round($request->price/23000, 2)
                     ]
                 ]
             ]

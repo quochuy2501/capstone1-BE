@@ -173,6 +173,7 @@ class FootballPitchController extends Controller
         $data_new = [];
         foreach ($data as $value) {
             array_push($arr_month, substr($value->month, 0, 2));
+            $data_new[$value->month] = $value->total_money;
 
             // array_push($data_new, ['month' => $value->month, 'total_money' => $value->total_money]);
             $data_new[$value->month] = $value->total_money;
@@ -183,6 +184,8 @@ class FootballPitchController extends Controller
         for ($i = $begin->month; $i < ($end->month + 1); $i++) {
             if (!in_array($i, $arr_month)) {
                 if ($i < 10) {
+                    $month = '0' . ($i) . '-' . $end->year;
+                    $data_new[$month] = 0;
 
                     $month = '0' . ($i) . '-' . $end->year;
                     $data_new[$month] = 0;
@@ -198,10 +201,12 @@ class FootballPitchController extends Controller
 
                     array_push($data_new, ['month' => '0' . ($i) . '-' . $end->year, 'total_money' => 0]);
                 } else {
-                    array_push($data_new, ['month' => ($i) . '-' . $end->year, 'total_money' => 0]);
+                    $month = ($i) . '-' . $end->year;
+                    $data_new[$month] = 0;
                 }
             }
         }
+        ksort($data_new);
         asort($data_new);
 
         return response()->json(['data' => $data_new], 200);

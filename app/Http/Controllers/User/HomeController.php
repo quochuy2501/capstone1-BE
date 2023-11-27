@@ -51,7 +51,7 @@ class HomeController extends Controller
             $football_pitchs = $football_pitchs->where('football_pitches.detailed_schedule', 'like', '%' . $tmp . '%');
         }
 
-        $football_pitchs = $football_pitchs->paginate(2);
+        $football_pitchs = $football_pitchs->paginate(5);
         if (count($football_pitchs) > 0) {
             return response()->json([
                 'football_pitchs'  => $football_pitchs,
