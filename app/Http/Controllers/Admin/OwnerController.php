@@ -14,6 +14,8 @@ class OwnerController extends Controller
         $owner = User::where("users.id_role", 1)
                         ->leftjoin("wards", "users.id_ward", "wards.id")
                         ->leftjoin("districts", "users.id_district", "districts.id")
+                        ->join("wards", "users.id_ward", "wards.id")
+                        ->join("districts", "users.id_district", "districts.id")
                         ->select("users.*", "districts.name_district", "wards.name_ward")
                         ->orderBy('users.id', 'DESC');
         if($request->is_block != ""){
