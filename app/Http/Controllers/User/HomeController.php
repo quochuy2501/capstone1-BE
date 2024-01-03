@@ -155,6 +155,14 @@ class HomeController extends Controller
         $check = true;
         $user = auth()->user();
         $dateTime = new DateTime($request->date);
+
+        $currentDateTime = new DateTime('now');
+        date_default_timezone_set("Asia/Ho_Chi_Minh");
+        $hour = date('H:i:s');
+        if($currentDateTime > $dateTime || ($dateTime->format('Y-m-d') == $currentDateTime->format('Y-m-d') && $hour > $request->time_start) || $request->time_start > $request->time_end ){
+            return response()->json(['error' => 'Invalid time'], 400);
+        };
+
         if ($football_pitch) {
             $time_end = "";
             $time_start = "";
@@ -163,11 +171,12 @@ class HomeController extends Controller
                 if (substr($request->date, 0, 3) == $value["id"] && $value["value"] == "open") {
                     $time_start = $value["startTime"];
                     $time_end = $value["endTime"];
-                    if ($time_start > $request->time_start || $time_end < $request->time_end) {
+                    if ($time_start > $request->time_start || $time_end < substr($request->time_end,0,4)) {
                         $check = false;
                     }
                 };
             }
+
             if ($time_start != null) {
                 $schedules = Schedule::where("pitch_id", $football_pitch->id)->whereDate("date", $dateTime)
                     ->orderBy("time_start")
@@ -284,5 +293,7 @@ class HomeController extends Controller
         }
         return response()->json(['error' => 'There are no schedule football pitches in the system'], 400);
     }
+
+}
 
 }
